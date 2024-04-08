@@ -7,7 +7,10 @@ PROJECT FLOW:
 create bdd-vars/bool-vars to represend graph nodes/edges -> create and write formulas/expressions -> convert formulas/expressions to bdd -> Operations on BDDs
 
 Operations on BDDs:
-define RR2 = RR o RR to be boolean formula in 10 vars -> 
+define RR2 = RR o RR to be boolean formula in 10 vars
+Perform extentsion of reachability upon itself to get RR2
+RR2star = transitive closure of RR2
+
 
 '''
 ## Generate variables for use in graph conversion to BDD ###########################################################################
@@ -154,12 +157,6 @@ This function computes rr2 by performing reachability step on itself
 '''
 def rr_to_rr2(rr: BinaryDecisionDiagram) -> BinaryDecisionDiagram:
     return  extend_reachability(rr, rr)
-
-'''
-The function accepts a bdd (rr) and iteratively extends the reachability of nodes in the graph represented 
-by the input BDD rr until reaching a fixed point where no further extension is possible, indicating that the 
-transitive closure has been achieved.
-'''
 
 ## Utilization of the Transitive closure property ################################################
 '''
