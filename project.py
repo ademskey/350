@@ -4,7 +4,7 @@ from pyeda.boolalg.bdd import *
 
 '''
 PROJECT FLOW:
-create bdd-vars/bool-vars -> create and write formulas/expressions -> convert formulas/expressions to bdd -> Operations on BDDs
+create bdd-vars/bool-vars to represend graph nodes/edges -> create and write formulas/expressions -> convert formulas/expressions to bdd -> Operations on BDDs
 
 Operations on BDDs:
 define RR2 = RR o RR to be boolean formula in 10 vars -> 
@@ -162,16 +162,20 @@ transitive closure has been achieved.
 '''
 
 ## Utilization of the Transitive closure property ################################################
+'''
+ transitive closure property ensures that if there is a path from X to node Z, and from Z to Y, 
+ then there's also path from x - y. This function iteratively extends the reachability of nodes 
+ until no further extensions are possible, capturing all transitive relationships in the BDD
+'''
 
 def transitive_closure(rr: BinaryDecisionDiagram) -> bool:
+    converging_bdd = rr  #initialie new bdd
 
-    converging_bdd = rr
-
-    while True:
+    while True: #infinite loop until break
         new_bdd = bdd or extend_reachability(converging_bdd, rr)
-        if new_bdd.equivalent(converging_bdd):
+        if new_bdd.equivalent(converging_bdd):  #If no futrhure iterations are possible,
             break
-        converging_bdd = new_bdd
+        converging_bdd = new_bdd # Update converging BDD for next iteration
 
     return converging_bdd
 
@@ -187,11 +191,12 @@ def find_node(bdd: BinaryDecisionDiagram, node: int, letter: str) -> bool:
     node_bin = format(node, 'b').rjust(5, '0')
     vars_x = set_bddvars(letter, 5)  # Generate list of BDD variables
 
-    nodes = {}  
-    for i in range(5):  
-        nodes[vars_x[i]] = int(node_bin[i])  # nodes = [0,1,1,1,0] 
-    restricted = bdd.restrict(nodes) # restrict bdd based on the dictionary nodes
-    restricted_test = restricted.is_one()
+    node = {}  
+    for i in range(5):  #iterates over the binairy rep of the node and assignes each spot as T/F
+        node[vars_x[i]] = int(node_bin[i])  # nodes = [0,1,1,1,0] 
+
+    restricted = bdd.restrict(node) # restrict bdd based on the dictionary node derived
+    restricted_test = restricted.is_one()  #Checks to see if the result exists
 
     return restricted_test
 
@@ -207,16 +212,10 @@ def search_bdd(bdd: BinaryDecisionDiagram, node1: int, node2: int) -> bool:
     node2_bin = format(node2, 'b').rjust(5, '0')  
 
     edges = {}
-    for i in range(5):
-        edges[vars_x[i]] = int(node1_bin[i])
-        edges[vars_y[i]] = int(node2_bin[i])
+    for i in range(5): #iterates over the binairy rep of the nodes and assignes each spot as T/F
+        edges[vars_x[i]] = int(node1_bin[i])  # ex. edges = [0,1,1,1,0]
+        edges[vars_y[i]] = int(node2_bin[i])  # ex. edges = [1,0,0,1,1]
 
-    restricted = bdd.restrict(edges)
-    restricted_test = restricted.is_one()
+    restricted = bdd.restrict(edges)  # Restricts based on the nodes
+    restricted_test = restricted.is_one()  #Checks to see if edge exits
     return restricted_test
-
-
-
-
-
-                

@@ -4,8 +4,8 @@ from project import *
 '''
 Testing for the project code. This tests graph create, even and prime set creation, and BDD's created.
 Checks the assignment PDF test questions as well as Question 3.
-
 '''
+
 class testing_bdd(unittest.TestCase):
     def setUp(self):
         # Set the letters to be used for bool variables (y for prime, x for even)
@@ -21,11 +21,14 @@ class testing_bdd(unittest.TestCase):
         self.prime_set_bdd = node_set_to_bdd(self.prime_list, 'y') # Convert the prime list to a BDD
         self.even_set_bdd = node_set_to_bdd(self.even_list, 'x')  # Convert the even list to a BDD
 
-        # Create the RR, RR2, RR2star BDD's
+        # Create the RR
         self.rr = graph_to_expressions(self.graph)  # Create the expressions from the graph made in setup
-        self.rr = combine_expressions(self.rr)       # Combine the expressions to a single expression
+        self.rr = combine_expressions(self.rr)       # Combine the expressions to a single expression RR = BDD grom graph
+
+        # Create RR2 and RR2star RR2 = RR o RR
         self.rr2 = rr_to_rr2(self.rr)                 # Create the rr2 from the rr
         self.rr2star = transitive_closure(self.rr2)   # Create the rr2star from the rr2
+        # RR2star = reachability in positive and even # of steps
 
     def test_create_graph(self):
         # Check if the graph is created correctly
@@ -85,7 +88,7 @@ class testing_bdd(unittest.TestCase):
         vars_y = set_bddvars(self.y, 5)
 
         # Bad Apple Step! Eliminate existential quantifiers over YY1-YY5
-        some_v = even_nodes_steps.smoothing(vars_y)
+        some_v = even_nodes_steps.smoothing(vars_y)  # some_v becomes nodes smoothed out over the set of Y variables 
 
         # Fish Step! PRIME BDD implies Bad Apple
         # logical equivalent of -> ("if then") == (~A | B) (Philosiphy 201)
@@ -93,7 +96,7 @@ class testing_bdd(unittest.TestCase):
 
         # Result Step! For all (XX1-XX5)Fish 
         # eliminate universal quantifier
-        vars_x = set_bddvars(self.x, 5)
+        vars_x = set_bddvars(self.x, 5)  
 
          # For every == ~Exists~ (Math 216)
         # ~(~Exists in XX1-XX5) ~BDD over X variables == ~(~BDD over X variables).smoothing(X variables)
